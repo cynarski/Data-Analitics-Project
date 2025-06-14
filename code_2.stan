@@ -8,13 +8,13 @@ data {
 parameters {
   real alpha;
   vector[K] beta;
-  real<lower=0> phi;  // parametr rozproszenia (overdispersion)
+  real<lower=0> phi; 
 }
 
 model {
-  alpha ~ normal(0.6647, 0.83); 
+  alpha ~ normal(1.5, 0.75); 
   beta ~ normal(0, 0.5);
-  phi ~ exponential(1);  // prior dla phi (możesz zmienić, np. half-normal)
+  phi ~ exponential(0.5);
 
   nkill ~ neg_binomial_2_log(alpha + X * beta, phi);
 }
