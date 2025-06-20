@@ -17,6 +17,7 @@ parameters {
   vector[K_weaptype] beta_weaptype;
   vector[K_targtype] beta_targtype;
   vector[K_country] beta_country;
+  real<lower=0> phi;
 }
 
 model {
@@ -27,13 +28,15 @@ model {
   beta_weaptype ~ normal(0, 0.5);
   beta_targtype ~ normal(0, 0.5);
   beta_country ~ normal(0, 0.5);
+  phi ~ exponential(0.5);
 
 /*
   alpha ~ normal(3.5, 1.25);
   beta_cont ~ normal(0.05, 0.25);
   beta_weaptype ~ normal(0.5, 0.5);
   beta_targtype ~ normal(0.15, 0.5);
-  beta_country ~ normal(0.15, 0.5);
+  beta_country ~ normal(0.15 0.5);
+  phi ~ exponential(0.5);
 */
 
   for (n in 1:N) {
@@ -43,8 +46,8 @@ model {
                     beta_targtype[targtype[n]] +
                     beta_country[country[n]];
   }
-  
-  nkill ~ poisson_log(log_lambda);
+
+  nkill ~ neg_binomial_2_log(log_lambda, phi);
 }
 
 generated quantities {
@@ -57,7 +60,7 @@ generated quantities {
                         beta_weaptype[weaptype[n]] +
                         beta_targtype[targtype[n]] +
                         beta_country[country[n]];
-    nkill_pred[n] = poisson_log_rng(log_lambda_n);
-    log_lik[n] = poisson_log_lpmf(nkill[n] | log_lambda_n);
+    nkill_pred[n] = neg_binomial_2_log_rng(log_lambda_n, phi);
+    log_lik[n] = neg_binomial_2_log_lpmf(nkill[n] | log_lambda_n, phi);
   }
 }

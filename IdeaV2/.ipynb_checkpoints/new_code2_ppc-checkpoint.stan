@@ -16,10 +16,10 @@ generated quantities {
   vector[K_weaptype] beta_weaptype;
   vector[K_targtype] beta_targtype;
   vector[K_country] beta_country;
-
+  real phi = exponential_rng(0.5);
   array[N] int nkill_prior_pred;
   vector[N] log_lambda_prior;
-
+  
   for (k in 1:K_cont) {
     beta_cont[k] = normal_rng(0, 0.5);
   }
@@ -39,10 +39,10 @@ generated quantities {
   vector[K_weaptype] beta_weaptype;
   vector[K_targtype] beta_targtype;
   vector[K_country] beta_country;
-
+  real phi = exponential_rng(0.5);
   array[N] int nkill_prior_pred;
   vector[N] log_lambda_prior;
-
+  
   for (k in 1:K_cont) {
     beta_cont[k] = normal_rng(0.05, 0.25);
   }
@@ -58,8 +58,11 @@ generated quantities {
 */
     
   for (n in 1:N) {
-    log_lambda_prior[n] = alpha + dot_product(row(X_cont, n), beta_cont) + beta_weaptype[weaptype[n]] + beta_targtype[targtype[n]] + beta_country[country[n]];
-
-    nkill_prior_pred[n] = poisson_log_rng(log_lambda_prior[n]);
+    log_lambda_prior[n] = alpha + 
+                          dot_product(row(X_cont, n), beta_cont) + 
+                          beta_weaptype[weaptype[n]] + 
+                          beta_targtype[targtype[n]] + 
+                          beta_country[country[n]];
+    nkill_prior_pred[n] = neg_binomial_2_log_rng(log_lambda_prior[n], phi);
   }
 }
