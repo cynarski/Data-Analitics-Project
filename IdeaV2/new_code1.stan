@@ -12,24 +12,22 @@ data {
 }
 
 parameters {
-  real alpha;                                        // intercept
-  vector[K_cont] beta_cont;                          // continuous predictor coefficients (nperps)
-  vector[K_weaptype] beta_weaptype;                  // weapon type effects
-  vector[K_targtype] beta_targtype;                  // target type effects
-  vector[K_country] beta_country;                    // country effects
+  real alpha;
+  vector[K_cont] beta_cont;
+  vector[K_weaptype] beta_weaptype;
+  vector[K_targtype] beta_targtype;
+  vector[K_country] beta_country;
 }
 
 model {
   vector[N] log_lambda;
   
-  // Priors
-  alpha ~ normal(2.5, 0.75);
-  beta_cont ~ normal(0, 0.25);
-  beta_weaptype ~ normal(0, 0.25);
-  beta_targtype ~ normal(0, 0.25);
-  beta_country ~ normal(0, 0.25);
-  
-  // Linear predictor
+  alpha ~ normal(3.5, 1.25);
+  beta_cont ~ normal(0.15, 0.25);
+  beta_weaptype ~ normal(0.65, 0.5);
+  beta_targtype ~ normal(0.25, 0.5);
+  beta_country ~ normal(0.25, 0.5);
+
   for (n in 1:N) {
     log_lambda[n] = alpha + 
                     dot_product(row(X_cont, n), beta_cont) +
@@ -38,13 +36,12 @@ model {
                     beta_country[country[n]];
   }
   
-  // Likelihood
   nkill ~ poisson_log(log_lambda);
 }
 
 generated quantities {
   array[N] int nkill_pred;
-  vector[N] log_lik;                                 // log-likelihood for LOO/WAIC
+  vector[N] log_lik;
   
   for (n in 1:N) {
     real log_lambda_n = alpha + 
