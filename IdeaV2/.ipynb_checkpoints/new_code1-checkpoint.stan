@@ -21,20 +21,20 @@ parameters {
 
 model {
   vector[N] log_lambda;
-  
+  /*
   alpha ~ normal(1.5, 0.75);
   beta_cont ~ normal(0, 0.5);
   beta_weaptype ~ normal(0, 0.5);
   beta_targtype ~ normal(0, 0.5);
   beta_country ~ normal(0, 0.5);
+  */
 
-/*
   alpha ~ normal(3.5, 1.25);
   beta_cont ~ normal(0.05, 0.25);
   beta_weaptype ~ normal(0.5, 0.5);
   beta_targtype ~ normal(0.15, 0.5);
   beta_country ~ normal(0.15, 0.5);
-*/
+
 
   for (n in 1:N) {
     log_lambda[n] = alpha + 
