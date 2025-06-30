@@ -23,11 +23,11 @@ parameters {
 model {
   vector[N] log_lambda;
 
-  alpha ~ normal(3.5, 1.25);
-  beta_cont ~ student_t(10, 0.05, 0.25);
-  beta_weaptype ~ student_t(10, 0.5, 0.5);
-  beta_targtype ~ student_t(10, 0.15, 0.5);
-  beta_country ~ student_t(10, 0.15, 0.5);
+  alpha ~ normal(2, 1.5);
+  beta_cont ~ student_t(10, 0, 0.5);
+  beta_weaptype ~ student_t(10, 0, 0.5);
+  beta_targtype ~ student_t(10, 0, 0.5);
+  beta_country ~ student_t(10, 0, 0.5);
   phi ~ exponential(1);
 
   for (n in 1:N) {

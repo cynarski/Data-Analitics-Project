@@ -11,7 +11,7 @@ data {
 }
 
 generated quantities {
-  real alpha = normal_rng(3.5, 1.25);
+  real alpha = normal_rng(2, 1.5);
   vector[K_cont] beta_cont;
   vector[K_weaptype] beta_weaptype;
   vector[K_targtype] beta_targtype;
@@ -21,16 +21,16 @@ generated quantities {
   vector[N] log_lambda_prior;
   
   for (k in 1:K_cont) {
-    beta_cont[k] = student_t_rng(10, 0.05, 0.25);
+    beta_cont[k] = student_t_rng(10, 0, 0.5);
   }
   for (k in 1:K_weaptype) {
-    beta_weaptype[k] = student_t_rng(10, 0.5, 0.5);
+    beta_weaptype[k] = student_t_rng(10, 0, 0.5);
   }
   for (k in 1:K_targtype) {
-    beta_targtype[k] = student_t_rng(10, 0.15, 0.5);
+    beta_targtype[k] = student_t_rng(10, 0, 0.5);
   }
   for (k in 1:K_country) {
-    beta_country[k] = student_t_rng(10, 0.15, 0.5);
+    beta_country[k] = student_t_rng(10, 0, 0.5);
   }
     
   for (n in 1:N) {
@@ -39,6 +39,11 @@ generated quantities {
                           beta_weaptype[weaptype[n]] + 
                           beta_targtype[targtype[n]] + 
                           beta_country[country[n]];
+    if (log_lambda_prior[n] > 10) {
+        log_lambda_prior[n] = 10;
+    } else if (log_lambda_prior[n] < -10) {
+        log_lambda_prior[n] = -10;
+    }
 
     nkill_prior_pred[n] = neg_binomial_2_log_rng(log_lambda_prior[n], phi);
   }
