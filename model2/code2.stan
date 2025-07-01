@@ -36,6 +36,11 @@ model {
                     beta_weaptype[weaptype[n]] +
                     beta_targtype[targtype[n]] +
                     beta_country[country[n]];
+    if (log_lambda[n] > 10) {
+        log_lambda[n] = 10;
+    } else if (log_lambda[n] < -10) {
+        log_lambda[n] = -10;
+    }
   }
 
   nkill ~ neg_binomial_2_log(log_lambda, phi);

@@ -32,6 +32,8 @@ generated quantities {
   for (k in 1:K_country) {
     beta_country[k] = student_t_rng(10, 0, 0.5);
   }
+
+
     
   for (n in 1:N) {
     log_lambda_prior[n] = alpha + 
@@ -43,6 +45,9 @@ generated quantities {
         log_lambda_prior[n] = 10;
     } else if (log_lambda_prior[n] < -10) {
         log_lambda_prior[n] = -10;
+    }
+    if (phi == 0) {
+        phi = 0.001;
     }
 
     nkill_prior_pred[n] = neg_binomial_2_log_rng(log_lambda_prior[n], phi);
